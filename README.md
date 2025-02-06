@@ -41,42 +41,43 @@ SECOND_P_COLOR = (255, 255, 255)
 GRAVITY = 9.81
 DAMPING_FACTOR = 1
 ```
+Length of the first (pendulum at the pivot) and second pendulum (pendulum attached to the first), respectively.:
 ```py
 FIRST_P_LENGTH = 200
 SECOND_P_LENGTH = 200
 ```
-Length of the first (pendulum at the pivot) and second pendulum (pendulum attached to the first), respectively.
+Width of the first and second pendulums, respectively:
 ```py
 FIRST_P_WIDTH = 2
 SECOND_P_WIDTH = 2
 ```
-Width of the first and second pendulums, respectively
+Initial angles of the first and second pendulums in radians. $$x^{\circ} = \frac{x\pi}{180}\quad\text{radians}$$ to convert degrees to radians:
 ```py
 FIRST_P_THETA = math.pi/2
 SECOND_P_THETA = math.pi/2
 ```
-Initial angles of the first and second pendulums in radians. $$x^{\circ} = \frac{x\pi}{180}\quad\text{radians}$$ to convert degrees to radians
+Simulated mass of the pendulums:
 ```py
 FIRST_P_MASS = 1
 SECOND_P_MASS = 1
 ```
-Simulated mass of the pendulums
+Initial angular velocity of the pendulums ($$\dot{\theta}$$, derivative of theta with respect to time):
 ```py
 FIRST_THETA_DOT = 0
 SECOND_THETA_DOT = 0
 ```
-Initial angular velocity of the pendulums ($$\dot{\theta}$$, derivative of theta with respect to time)
+Colors of the pendulums and their bobs:
 ```py
 FIRST_P_COLOR = (255, 255, 255)
 SECOND_P_COLOR = (255, 255, 255)
 ```
-Colors of the pendulums and their bobs
+Gravity in $$\frac{m}{s^2}$$, and a damping factor (1 leads results in perpetual motion, anything less like 0.995 slows down the pendulum with time):
 ```py
 GRAVITY = 9.81
 DAMPING_FACTOR = 1
 ```
-Gravity in $$\frac{m}{s^2}$$, and a damping factor (1 leads results in perpetual motion, anything less like 0.995 slows down the pendulum with time)
 ### Physics
+The function takes in `theta1`, `theta2`, `theta1_dot`, `theta2_dot`. These are the initial angles and angular velocities of the pendulums. The function returns angular acceleration $$\ddot{\theta_{1}}$$ and $$\ddot{\theta_{2}}$$, the second derivatives of theta with respect to time:
 ```py
 def compute_accelerations(theta1, theta2, theta1_dot, theta2_dot):
     num1 = -GRAVITY * (2 * FIRST_P_MASS + SECOND_P_MASS) * math.sin(theta1)
@@ -95,22 +96,22 @@ def compute_accelerations(theta1, theta2, theta1_dot, theta2_dot):
 
     return theta1_ddot, theta2_ddot
 ```
-The function takes in `theta1`, `theta2`, `theta1_dot`, `theta2_dot`. These are the initial angles and angular velocities of the pendulums. The function returns angular acceleration $$\ddot{\theta_{1}}$$ and $$\ddot{\theta_{2}}$$, the second derivatives of theta with respect to time
+Parts of the numerator for the first pendulum's angular acceleration equation:
 ```py
     num1 = -GRAVITY * (2 * FIRST_P_MASS + SECOND_P_MASS) * math.sin(theta1)
     num2 = -SECOND_P_MASS * GRAVITY * math.sin(theta1 - 2 * theta2)
     num3 = -2 * math.sin(theta1 - theta2) * SECOND_P_MASS
     num4 = theta2_dot ** 2 * SECOND_P_LENGTH + theta1_dot ** 2 * FIRST_P_LENGTH * math.cos(theta1 - theta2)
 ```
-Parts of the numerator for the first pendulum's angular acceleration equation
+Denominator of the first pendulum's angular acceleration equation:
 ```py
     den = FIRST_P_LENGTH * (2 * FIRST_P_MASS + SECOND_P_MASS - SECOND_P_MASS * math.cos(2 * theta1 - 2 * theta2))
 ```
-Denominator of the first pendulum's angular acceleration equation
+Pieces together the equation:
 ```py
     theta1_ddot = (num1 + num2 + num3 * num4) / den
 ```
-Pieces together the equation
+Same but for the second pendulum (meaning different equations, yay):
 ```py
     num5 = 2 * math.sin(theta1 - theta2)
     num6 = (theta1_dot ** 2 * FIRST_P_LENGTH * (FIRST_P_MASS + SECOND_P_MASS))
@@ -119,12 +120,13 @@ Pieces together the equation
     den2 = SECOND_P_LENGTH * (2 * FIRST_P_MASS + SECOND_P_MASS - SECOND_P_MASS * math.cos(2 * theta1 - 2 * theta2))
     theta2_ddot = (num5 * (num6 + num7 + num8)) / den2
 ```
-Same but for the second pendulum (meaning different equations, yay)
+Returns both accelerations as a tuple:
 ```py
     return theta1_ddot, theta2_ddot
 ```
-Returns both accelerations as a tuple
 
+
+Runge-Kutta-4th-Order (RK4) numerical integration technique to approximate theta from angular acceleration (second order ordinary differential equation (ODE)). Was too lazy to search and study how any of this works, but hey, it does! `new_theta1_dot *= damping` and `new_theta2_dot *= damping` apply damping by multiplying it with the damping factor:
 ```py
 def rk4_step(damping, theta1, theta2, theta1_dot, theta2_dot, dt):
     # Initial accelerations
@@ -169,7 +171,7 @@ def rk4_step(damping, theta1, theta2, theta1_dot, theta2_dot, dt):
     
     return new_theta1, new_theta2, new_theta1_dot, new_theta2_dot
 ```
-Runge-Kutta-4th-Order (RK4) numerical integration technique to approximate theta from angular acceleration (second order ordinary differential equation (ODE)). Was too lazy to search and study how any of this works, but hey, it does! `new_theta1_dot *= damping` and `new_theta2_dot *= damping` apply damping by multiplying it with the damping factor
+Pendulum class:
 ```py
 class Pendulum:
     def __init__(self, length, theta, mass, color, width, x_pos, y_pos):
@@ -192,7 +194,7 @@ class Pendulum:
         pygame.draw.line(screen, self.color, (self.x_pos, self.y_pos), (self.end_x, self.end_y), self.width)
         self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), 10)
 ```
-Pendulum class
+Initialization parameters, defining the length, angle, mass, color, width, x position of pivot and the y position of the pivot respectively.:
 ```py
     def __init__(self, length, theta, mass, color, width, x_pos, y_pos):
         self.length = length
@@ -205,25 +207,24 @@ Pendulum class
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 ```
-Initialization parameters, defining the length, angle, mass, color, width, x position of pivot and the y position of the pivot respectively.
+Some trigonometry to calculate the endpoint positions of the pendulums. We add the y position of the pivot rather than subtract because Pygame's coordinate system inverts the y axis... for whatever reason.:
 ```py
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 ```
-Some trigonometry to calculate the endpoint positions of the pendulums. We add the y position of the pivot rather than subtract because Pygame's coordinate system inverts the y axis... for whatever reason.
+Update the position with the same trig:
 ```py
     def update_position(self, theta):
         self.theta = theta
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 ```
-Updates the position with the same trig
+Draw the pendulum and its bob:
 ```py
     def draw(self):
         pygame.draw.line(screen, self.color, (self.x_pos, self.y_pos), (self.end_x, self.end_y), self.width)
         self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), 10)
 ```
-Draws the pendulum and its bob
 ```py
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
@@ -257,17 +258,18 @@ while running:
 
 pygame.quit()
 ```
+Create an instance of both pendulums:
 ```py
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
 ```
-Creates an instance of both pendulums
+`positions` is an empty list for now, it will store the endpoint positions of a given pendulum (in this case, as we will see later, pendulum 2). `POSITION_LIMIT` is the max positions we can store (to avoid memory leaks and make the trail disappear with time). `ENABLE_TRAIL` is a boolean to enable the trail or not:
 ```py
 positions = []
 POSITION_LIMIT = 100
 ENABLE_TRAIL = True
 ```
-`positions` is an empty list for now, it will store the endpoint positions of a given pendulum (in this case, as we will see later, pendulum 2). `POSITION_LIMIT` is the max positions we can store (to avoid memory leaks and make the trail disappear with time). `ENABLE_TRAIL` is a boolean to enable the trail or not
+Check events in the main loop, quit when prompted.:
 ```py
 while running:
     for event in pygame.event.get():
@@ -275,7 +277,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 ```
-Check events in the main loop, quit when prompted.
+`dt` gives a small change in time in milliseconds. That's the time interval the physics will update. `FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)` applies one step `dt` to the rk4 numerical integration approximation rk4
 ```py
     dt = 0.28
     FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)
@@ -283,19 +285,19 @@ Check events in the main loop, quit when prompted.
     pendulum_2.x_pos, pendulum_2.y_pos = pendulum_1.end_x, pendulum_1.end_y
     pendulum_2.update_position(SECOND_P_THETA)
 ```
-`dt` gives a small change in time in milliseconds. That's the time interval the physics will update. `FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)` applies one step `dt` to the rk4 numerical integration approximation rk4
+Update relevant positions:
 ```py
     pendulum_1.update_position(FIRST_P_THETA)
     pendulum_2.x_pos, pendulum_2.y_pos = pendulum_1.end_x, pendulum_1.end_y
     pendulum_2.update_position(SECOND_P_THETA)
 ```
-Updates relevant positions
+Sets the background color (and also refreshes the screen every iteration). `pendulum_1.draw()` and `pendulum_2.draw()` draw the pendulums:
 ```py
     screen.fill(BG_COLOR)
     pendulum_1.draw()
     pendulum_2.draw()
 ```
-Sets the background color (and also refreshes the screen every iteration). `pendulum_1.draw()` and `pendulum_2.draw()` draw the pendulums
+Checks if the trail is enabled. If so, the list mentioned earlier adds the current positions of the second pendulum's bob:
 ```py
     if ENABLE_TRAIL:
         positions.append((pendulum_2.end_x, pendulum_2.end_y))
@@ -304,17 +306,16 @@ Sets the background color (and also refreshes the screen every iteration). `pend
         for i in range(len(positions)):
             pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
 ```
-Checks if the trail is enabled. If so, the list mentioned earlier adds the current positions of the second pendulum's bob
+If the list extends the length limit, it removes the first position in the list:
 ```py
         if len(positions) > POSITION_LIMIT:
             positions.remove(positions[0])
 ```
-If the list extends the lenght limit, it removes the first position in the list
+For every position in the list, draw a rectangle at that position.:
 ```py
         for i in range(len(positions)):
             pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
 ```
-For every position in the list, draw a rectangle at that position.
 
 
 

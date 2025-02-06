@@ -36,7 +36,7 @@ SECOND_P_COLOR = (255, 255, 255)
 
 # Pendulum constants
 GRAVITY = 9.81
-DAMPING_FACTOR = 1
+DAMPING_FACTOR = 0.9
 
 def compute_accelerations(theta1, theta2, theta1_dot, theta2_dot):
     num1 = -GRAVITY * (2 * FIRST_P_MASS + SECOND_P_MASS) * math.sin(theta1)
@@ -108,7 +108,6 @@ class Pendulum:
         self.color = color
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.dragging = False
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 
@@ -124,7 +123,6 @@ class Pendulum:
 # Main loop
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
-mouse_held = False
 positions = []
 POSITION_LIMIT = 100
 ENABLE_TRAIL = True
@@ -133,12 +131,8 @@ while running:
         mouse_pos_x, mouse_pos_y = pygame.mouse.get_pos()
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_held = True
-        if event.type == pygame.MOUSEBUTTONUP:
-            mouse_held = False
 
-    dt = clock.get_time() / 60
+    dt = 0.28
     FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)
     pendulum_1.update_position(FIRST_P_THETA)
     pendulum_2.x_pos, pendulum_2.y_pos = pendulum_1.end_x, pendulum_1.end_y
@@ -151,8 +145,7 @@ while running:
         if len(positions) > POSITION_LIMIT:
             positions.remove(positions[0])
         for i in range(len(positions)):
-            if len(positions) > 1:
-                pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
+            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
     pygame.display.flip()
     clock.tick(FPS)
 

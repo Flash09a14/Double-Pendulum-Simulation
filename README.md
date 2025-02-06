@@ -2,6 +2,22 @@
 ## Physics double pendulum simulation using pygame, Lagrangian equations of motion, and RK4 integration
 ![Demo gif of the program](demo.gif)
 
+# Run
+To run the project, make sure to install the dependencies in `requirements.txt`. You can create a virtual environment using the command
+```
+cd path\to\project
+python -m venv name_of_venv
+```
+Use the command
+```
+name_of_venv\Scripts\activate
+```
+To activate the virtual environment, and then proceed with
+```
+python -m pip install -r requirements.txt
+```
+### If you think the creation of a venv is unnecessary, you can directly use the command above to install the necessary packages
+
 ## Code:
 ### Parameters
 ```py
@@ -300,21 +316,6 @@ If the list extends the lenght limit, it removes the first position in the list
 ```
 For every position in the list, draw a rectangle at that position.
 
-# Run
-To run the project, make sure to install the dependencies in `requirements.txt`. You can create a virtual environment using the command
-```
-cd path\to\project
-python -m venv name_of_venv
-```
-Use the command
-```
-name_of_venv\Scripts\activate
-```
-To activate the virtual environment, and then proceed with
-```
-python -m pip install -r requirements.txt
-```
-### If you think the creation of a venv is unnecessary, you can directly use the command above to install the necessary packages
 
 
 ## The equations of motion were derived from Lagrangian mechanics, for more info, check the links below:

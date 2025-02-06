@@ -318,6 +318,7 @@ python -m pip install -r requirements.txt
 
 ## The equations of motion were derived from Lagrangian mechanics, for more info, check the links below:
 https://en.wikipedia.org/wiki/Double_pendulum
+
 https://physics.umd.edu/hep/drew/pendulum2.html (this one was the most helpful for this project)
 
 This project is completely open source (OSS). Do whatever you want with it, I don't care.

@@ -163,7 +163,6 @@ class Pendulum:
         self.color = color
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.dragging = False
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 
@@ -186,11 +185,10 @@ Pendulum class
         self.color = color
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.dragging = False
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
 ```
-Initialization parameters, defining the length, angle, mass, color, width, x position of pivot and the y position of the pivot respectively. `self.dragging = False` is redundant, I added it for future functionality of being able to drag the pendulums with your mouse.
+Initialization parameters, defining the length, angle, mass, color, width, x position of pivot and the y position of the pivot respectively.
 ```py
         self.end_x = self.x_pos + self.length * math.sin(self.theta)
         self.end_y = self.y_pos + self.length * math.cos(self.theta)
@@ -221,10 +219,6 @@ while running:
         mouse_pos_x, mouse_pos_y = pygame.mouse.get_pos()
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_held = True
-        if event.type == pygame.MOUSEBUTTONUP:
-            mouse_held = False
 
     dt = clock.get_time() / 60
     FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)
@@ -263,10 +257,6 @@ while running:
         mouse_pos_x, mouse_pos_y = pygame.mouse.get_pos()
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_held = True
-        if event.type == pygame.MOUSEBUTTONUP:
-            mouse_held = False
 ```
 Check events in the main loop, quit when prompted.
 ```py

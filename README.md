@@ -1,4 +1,4 @@
-![Demo gif of the program]("demo.gif")
+![Demo gif of the program]("demo.gif"))
 # Double-Pendulum-Simulation
 ## Physics double pendulum simulation using pygame, Lagrangian equations of motion, and RK4 integration
 

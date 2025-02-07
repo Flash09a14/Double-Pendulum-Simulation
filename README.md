@@ -287,7 +287,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 ```
-`dt` gives a small change in time in milliseconds. That's the time interval the physics will update. `FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)` applies one step `dt` to the rk4 numerical integration approximation rk4
+`dt` gives a small change in time in milliseconds. That's the time interval the physics will update. `FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)` applies one step `dt` to the rk4 numerical integration approximation:
 ```py
     dt = 0.28
     FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)

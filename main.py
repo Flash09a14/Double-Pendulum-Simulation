@@ -21,7 +21,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT), vsync=1)
 running = True
 
 # Base pendulum parameters
-BASE_LENGTH = WIDTH/10
+BASE_LENGTH = int(WIDTH * 0.1)
 PENDULUM_WIDTH_RATIO = 0.002
 BOB_RADIUS = int(WIDTH * 0.01)
 

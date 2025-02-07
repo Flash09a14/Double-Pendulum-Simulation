@@ -247,7 +247,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    dt = clock.get_time() / 60
+    dt = 0.28
     FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT = rk4_step(DAMPING_FACTOR, FIRST_P_THETA, SECOND_P_THETA, FIRST_THETA_DOT, SECOND_THETA_DOT, dt)
     pendulum_1.update_position(FIRST_P_THETA)
     pendulum_2.x_pos, pendulum_2.y_pos = pendulum_1.end_x, pendulum_1.end_y

@@ -332,7 +332,7 @@ For every position in the list, draw a rectangle at that position.:
 ## The equations of motion were derived from Lagrangian mechanics, for more info, check the links below:
 https://en.wikipedia.org/wiki/Double_pendulum
 
-https://physics.umd.edu/hep/drew/pendulum2.html (this one was the most helpful for this project)
+https://physics.umd.edu/hep/drew/pendulum2.html
 
 https://web.mit.edu/jorloff/www/chaosTalk/double-pendulum/double-pendulum-en.html (almost forgot to include this one. This is where I got the equations of motion)
 

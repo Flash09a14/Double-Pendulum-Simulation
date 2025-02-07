@@ -21,11 +21,20 @@ python -m pip install -r requirements.txt
 ## Code:
 ### Parameters
 ```py
+# Base pendulum parameters
+BASE_LENGTH = int(WIDTH * 0.1)
+PENDULUM_WIDTH_RATIO = 0.002
+BOB_RADIUS = int(WIDTH * 0.01)
+```
+`BASE_LENGTH` sets the base relationship of length of the pendulum and dynamically changes with resolution.
+`PENDULUM_WIDTH_RATIO` is the factor for the width of the pendulum rod, smaller values will result in thinner rods.
+`BOB_RADIUS` is the base relationship for the radius of the pendulums' bobs, and again, dynamically scales with resolution.
+```py
 # Pendulum parameters
-FIRST_P_LENGTH = 200
-SECOND_P_LENGTH = 200
-FIRST_P_WIDTH = 2
-SECOND_P_WIDTH = 2
+FIRST_P_LENGTH = BASE_LENGTH
+SECOND_P_LENGTH = BASE_LENGTH
+FIRST_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
+SECOND_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
 FIRST_P_THETA = math.pi/2
 SECOND_P_THETA = math.pi/2
 
@@ -43,13 +52,13 @@ DAMPING_FACTOR = 1
 ```
 Length of the first (pendulum at the pivot) and second pendulum (pendulum attached to the first), respectively.:
 ```py
-FIRST_P_LENGTH = 200
-SECOND_P_LENGTH = 200
+FIRST_P_LENGTH = BASE_LENGTH
+SECOND_P_LENGTH = BASE_LENGTH
 ```
 Width of the first and second pendulums, respectively:
 ```py
-FIRST_P_WIDTH = 2
-SECOND_P_WIDTH = 2
+FIRST_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
+SECOND_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
 ```
 Initial angles of the first and second pendulums in radians. $$x^{\circ} = \frac{x\pi}{180}\quad\text{radians}$$ to convert degrees to radians:
 ```py
@@ -107,7 +116,7 @@ Denominator of the first pendulum's angular acceleration equation:
 ```py
     den = FIRST_P_LENGTH * (2 * FIRST_P_MASS + SECOND_P_MASS - SECOND_P_MASS * math.cos(2 * theta1 - 2 * theta2))
 ```
-Pieces together the equation:
+Piece together the equation:
 ```py
     theta1_ddot = (num1 + num2 + num3 * num4) / den
 ```
@@ -192,7 +201,7 @@ class Pendulum:
 
     def draw(self):
         pygame.draw.line(screen, self.color, (self.x_pos, self.y_pos), (self.end_x, self.end_y), self.width)
-        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), 10)
+        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), BOB_RADIUS)
 ```
 Initialization parameters, defining the length, angle, mass, color, width, x position of pivot and the y position of the pivot respectively.:
 ```py
@@ -223,14 +232,14 @@ Draw the pendulum and its bob:
 ```py
     def draw(self):
         pygame.draw.line(screen, self.color, (self.x_pos, self.y_pos), (self.end_x, self.end_y), self.width)
-        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), 10)
+        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), BOB_RADIUS)
 ```
 ```py
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
-mouse_held = False
 positions = []
-POSITION_LIMIT = 100
+POSITION_LIMIT = int(FPS * 2)
+TRAIL_SIZE = int(WIDTH * 0.005)
 ENABLE_TRAIL = True
 while running:
     for event in pygame.event.get():
@@ -263,10 +272,11 @@ Create an instance of both pendulums:
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
 ```
-`positions` is an empty list for now, it will store the endpoint positions of a given pendulum (in this case, as we will see later, pendulum 2). `POSITION_LIMIT` is the max positions we can store (to avoid memory leaks and make the trail disappear with time). `ENABLE_TRAIL` is a boolean to enable the trail or not:
+`positions` is an empty list for now, it will store the endpoint positions of a given pendulum (in this case, as we will see later, pendulum 2). `POSITION_LIMIT` is the max positions we can store (to avoid memory leaks and make the trail disappear with time), currently, it shows about 2 seconds worth of data. `ENABLE_TRAIL` is a boolean to enable the trail or not:
 ```py
 positions = []
-POSITION_LIMIT = 100
+POSITION_LIMIT = int(FPS * 2)
+TRAIL_SIZE = int(WIDTH * 0.005)
 ENABLE_TRAIL = True
 ```
 Check events in the main loop, quit when prompted.:
@@ -304,7 +314,7 @@ Checks if the trail is enabled. If so, the list mentioned earlier adds the curre
         if len(positions) > POSITION_LIMIT:
             positions.remove(positions[0])
         for i in range(len(positions)):
-            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
+            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], TRAIL_SIZE, TRAIL_SIZE)))
 ```
 If the list extends the length limit, it removes the first position in the list:
 ```py
@@ -314,7 +324,7 @@ If the list extends the length limit, it removes the first position in the list:
 For every position in the list, draw a rectangle at that position.:
 ```py
         for i in range(len(positions)):
-            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
+            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], TRAIL_SIZE, TRAIL_SIZE)))
 ```
 
 

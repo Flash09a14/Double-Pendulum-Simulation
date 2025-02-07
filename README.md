@@ -334,6 +334,8 @@ https://en.wikipedia.org/wiki/Double_pendulum
 
 https://physics.umd.edu/hep/drew/pendulum2.html (this one was the most helpful for this project)
 
+https://web.mit.edu/jorloff/www/chaosTalk/double-pendulum/double-pendulum-en.html (almost forgot to include this one. This is where I got the equations of motion)
+
 This project is completely open source (OSS). Do whatever you want with it, I don't care.
 
 Have fun :)

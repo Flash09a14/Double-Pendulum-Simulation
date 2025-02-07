@@ -12,17 +12,24 @@ FPS = 60
 # Constants
 BG_COLOR = (0, 0, 0)
 FULLSCREEN = True
-WIDTH = pygame.display.Info().current_w if FULLSCREEN == True else 1000
-HEIGHT = pygame.display.Info().current_h if FULLSCREEN == True else 600
+DEFAULT_WIDTH = 1000
+DEFAULT_HEIGHT = 600
+WIDTH = pygame.display.Info().current_w if FULLSCREEN == True else DEFAULT_WIDTH
+HEIGHT = pygame.display.Info().current_h if FULLSCREEN == True else DEFAULT_HEIGHT
 print(WIDTH, HEIGHT)
 screen = pygame.display.set_mode((WIDTH, HEIGHT), vsync=1)
 running = True
 
+# Base pendulum parameters
+BASE_LENGTH = WIDTH/10
+PENDULUM_WIDTH_RATIO = 0.002
+BOB_RADIUS = int(WIDTH * 0.01)
+
 # Pendulum parameters
-FIRST_P_LENGTH = 200
-SECOND_P_LENGTH = 200
-FIRST_P_WIDTH = 2
-SECOND_P_WIDTH = 2
+FIRST_P_LENGTH = BASE_LENGTH
+SECOND_P_LENGTH = BASE_LENGTH
+FIRST_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
+SECOND_P_WIDTH = int(WIDTH * PENDULUM_WIDTH_RATIO)
 FIRST_P_THETA = math.pi/2
 SECOND_P_THETA = math.pi/2
 
@@ -36,7 +43,7 @@ SECOND_P_COLOR = (255, 255, 255)
 
 # Pendulum constants
 GRAVITY = 9.81
-DAMPING_FACTOR = 0.9
+DAMPING_FACTOR = 1
 
 def compute_accelerations(theta1, theta2, theta1_dot, theta2_dot):
     num1 = -GRAVITY * (2 * FIRST_P_MASS + SECOND_P_MASS) * math.sin(theta1)
@@ -124,7 +131,8 @@ class Pendulum:
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
 pendulum_2 = Pendulum(SECOND_P_LENGTH, SECOND_P_THETA, SECOND_P_MASS, SECOND_P_COLOR, SECOND_P_WIDTH, pendulum_1.end_x, pendulum_1.end_y)
 positions = []
-POSITION_LIMIT = 100
+POSITION_LIMIT = int(FPS * 2)
+TRAIL_SIZE = int(WIDTH * 0.005)
 ENABLE_TRAIL = True
 while running:
     for event in pygame.event.get():
@@ -145,7 +153,7 @@ while running:
         if len(positions) > POSITION_LIMIT:
             positions.remove(positions[0])
         for i in range(len(positions)):
-            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], 5, 5)))
+            pygame.draw.rect(screen, pendulum_2.color, (pygame.Rect(positions[i][0], positions[i][1], TRAIL_SIZE, TRAIL_SIZE)))
     pygame.display.flip()
     clock.tick(FPS)
 

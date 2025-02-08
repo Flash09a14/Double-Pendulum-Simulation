@@ -125,7 +125,7 @@ class Pendulum:
 
     def draw(self):
         pygame.draw.line(screen, self.color, (self.x_pos, self.y_pos), (self.end_x, self.end_y), self.width)
-        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), 10)
+        self.circ = pygame.draw.circle(screen, self.color, (self.end_x, self.end_y), BOB_RADIUS)
 
 # Main loop
 pendulum_1 = Pendulum(FIRST_P_LENGTH, FIRST_P_THETA, FIRST_P_MASS, FIRST_P_COLOR, FIRST_P_WIDTH, WIDTH / 2, HEIGHT/2)
